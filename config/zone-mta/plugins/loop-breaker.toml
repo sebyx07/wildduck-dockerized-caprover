@@ -1,0 +1,4 @@
+["modules/zonemta-loop-breaker"]
+enabled="sender"
+secret="WcIVTyWnfEutyZQQf2RGK7EGXVPLSk"
+algo="md5"

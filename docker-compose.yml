@@ -7,13 +7,15 @@ services:
   wildduck:
     image: nodemailer/wildduck:v1.34.0
     restart: unless-stopped
+    networks:
+      - captain-overlay-network
     ports:
       - "127.0.0.1:8080:8080"
       - "143:143"
       - "110:110"
     depends_on:
-      - mongo
-      - redis
+      - wildduck-mongo
+      - wildduck-redis
     volumes:
       - ./config/wildduck:/wildduck/config
     labels:
@@ -34,9 +36,11 @@ services:
     command: 
       - ""
     restart: unless-stopped
+    networks:
+      - captain-overlay-network
     depends_on:
-      - mongo
-      - redis
+      - wildduck-mongo
+      - wildduck-redis
       - wildduck
     volumes:
       - ./config/wildduck-webmail:/app/config
@@ -47,60 +51,72 @@ services:
       # traefik.http.routers.wildduck-webmail.tls.certresolver: letsencrypt
       traefik.http.services.wildduck-webmail.loadbalancer.server.port: 3000
 
-  zonemta:
+  wildduck-zonemta:
     image: nodemailer/zonemta-wildduck
     restart: unless-stopped
+    networks:
+      - captain-overlay-network
     ports:
       - "587:587"
     depends_on: 
-      - mongo
-      - redis
+      - wildduck-mongo
+      - wildduck-redis
     volumes:
       - ./config/zone-mta:/app/config
     labels:
       traefik.enable: true
-      traefik.tcp.routers.zonemta.entrypoints: smtps
-      traefik.tcp.routers.zonemta.rule: HostSNI(`${HOSTNAMES}`)
-      traefik.tcp.routers.zonemta.tls.certresolver: letsencrypt
-      traefik.tcp.services.zonemta.loadbalancer.server.port: 587
+      traefik.tcp.routers.wildduck-zonemta.entrypoints: smtps
+      traefik.tcp.routers.wildduck-zonemta.rule: HostSNI(`${HOSTNAMES}`)
+      traefik.tcp.routers.wildduck-zonemta.tls.certresolver: letsencrypt
+      traefik.tcp.services.wildduck-zonemta.loadbalancer.server.port: 587
 
-  haraka:
+  wildduck-haraka:
     image: nodemailer/haraka-wildduck
     restart: unless-stopped
+    networks:
+      - captain-overlay-network
     ports:
       - "25:25"
     depends_on:
-      - mongo
-      - redis
-      - rspamd
+      - wildduck-mongo
+      - wildduck-redis
+      - wildduck-rspamd
     volumes:
       - ./config/haraka:/app/config
 
-  rspamd:
+  wildduck-rspamd:
     image: nodemailer/rspamd
     restart: unless-stopped
+    networks:
+      - captain-overlay-network
     depends_on:
-      - redis
+      - wildduck-redis
     volumes:
       - ./config/rspamd/override.d:/etc/rspamd/override.d
       - ./config/rspamd/worker-normal.conf:/etc/rspamd/worker-normal.conf
       - ./config/rspamd/local.d:/etc/rspamd/local.d
 
-  mongo:
+  wildduck-mongo:
     image: mongo
     restart: unless-stopped
+    networks:
+      - captain-overlay-network
     volumes:
       - mongo:/data/db
     
-  redis:
+  wildduck-redis:
     image: redis:alpine
     restart: unless-stopped
+    networks:
+      - captain-overlay-network
     volumes:
       - redis:/data
 
-  traefik:
+  wildduck-traefik:
     image: traefik
     restart: unless-stopped
+    networks:
+      - captain-overlay-network
     command:
       - "--entrypoints.http.address=:80"
       - "--entrypoints.imaps.address=:993"
@@ -117,7 +133,6 @@ services:
       traefik.http.routers.redirs.rule: hostregexp(`{host:.+}`)
     ports:
       - 80:80/tcp
-      - 443:443/tcp
       - 993:993/tcp
       - 995:995/tcp
       - 465:465/tcp
