@@ -42,9 +42,9 @@ services:
       - ./config/wildduck-webmail:/app/config
     labels:
       traefik.enable: true
-      traefik.http.routers.wildduck-webmail.entrypoints: https
+      # traefik.http.routers.wildduck-webmail.entrypoints: https
       traefik.http.routers.wildduck-webmail.rule: Host(`${HOSTNAMES}`)
-      traefik.http.routers.wildduck-webmail.tls.certresolver: letsencrypt
+      # traefik.http.routers.wildduck-webmail.tls.certresolver: letsencrypt
       traefik.http.services.wildduck-webmail.loadbalancer.server.port: 3000
 
   zonemta:
@@ -103,7 +103,6 @@ services:
     restart: unless-stopped
     command:
       - "--entrypoints.http.address=:80"
-      - "--entrypoints.https.address=:443"
       - "--entrypoints.imaps.address=:993"
       - "--entrypoints.pop3s.address=:995"
       - "--entrypoints.smtps.address=:465"
@@ -114,9 +113,7 @@ services:
       - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
     labels:
       traefik.enable: true
-      traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: https
       traefik.http.routers.redirs.entrypoints: http
-      traefik.http.routers.redirs.middlewares: redirect-to-https
       traefik.http.routers.redirs.rule: hostregexp(`{host:.+}`)
     ports:
       - 80:80/tcp
