@@ -3,8 +3,12 @@
 # Server process must be able to locally bind to these addresses
 
 [[default]]
-address="0.0.0.0"
+address="88.99.2.60"
 name="mail.omglol.africa"
+
+[[default]]
+address="88.99.2.60"
+name="omglol.africa"
 #
 #[[default]]
 #address="1.2.3.5"
