@@ -3,6 +3,9 @@ volumes:
   mongo:
   redis:
   traefik:
+networks:
+  captain-overlay-network:
+    external: true
 services: 
   wildduck:
     image: nodemailer/wildduck:v1.34.0
