@@ -27,7 +27,7 @@ sender="zone-mta"
 #queued="mail"
 
 [redis]
-host="redis"
+host="wildduck-redis"
 port=6379
 db=3
 

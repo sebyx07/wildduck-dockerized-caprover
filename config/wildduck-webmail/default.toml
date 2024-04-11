@@ -33,7 +33,7 @@ title="wildduck-www"
     mongo="mongodb://wildduck-mongo:27017/wildduck-webmail"
 
     # redis connection string for Express sessions
-    redis="redis://redis:6379/5"
+    redis="redis://wildduck-redis:6379/5"
 
 [www]
     host=false
