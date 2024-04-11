@@ -135,7 +135,7 @@ services:
       traefik.http.routers.redirs.entrypoints: http
       traefik.http.routers.redirs.rule: hostregexp(`{host:.+}`)
     ports:
-      - 80:80/tcp
+      - 8080:80/tcp
       - 993:993/tcp
       - 995:995/tcp
       - 465:465/tcp
